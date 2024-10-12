@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "build": "tsup --config ./tsup.config.ts",
+    "precommit": "rm -r node_modules/ && npm clean-install && npm run build && rm -r node_modules && npm clean-install --omit=dev",
     "start": "npm run build -- --onSuccess \"node ./dist/generateChangeLog.js\" --silent --watch"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import { parser, Release } from 'keep-a-changelog';
+import { Change, parser, Release } from 'keep-a-changelog';
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { array, boolean, object, optional, parse, string } from 'valibot';
@@ -71,16 +71,25 @@ let release = changelog.findRelease();
 
 release || changelog.addRelease((release = new Release()));
 
-release.changed(`Bumped dependencies, in PR [#${pullRequestNumber}](${new URL(
+const change = new Change(`Bumped dependencies, in PR [#${pullRequestNumber}](${new URL(
   pullRequestNumber,
   new URL('pull/', projectURL)
 )})
 ${bumpedDependenciesString}${bumpedDevDependenciesString}
 `);
 
+release.changed(change);
+
 await writeFile(changelogPath, changelog.toString());
+
+const changeText = change
+  .toString()
+  .split('\n')
+  .map((line, index) => `${index ? '  ' : '- '}${line}`)
+  .join('\n');
 
 core.setOutput('changelog', changelog.toString());
 core.setOutput('release', release.toString(changelog));
+core.setOutput('change', changeText);
 
-console.log(changelog.toString());
+console.log(changeText);

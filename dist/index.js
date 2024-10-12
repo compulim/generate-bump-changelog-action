@@ -1,6 +1,6 @@
 // src/index.ts
 import * as core from "@actions/core";
-import { parser, Release } from "keep-a-changelog";
+import { Change, parser, Release } from "keep-a-changelog";
 import { readFile as readFile2, writeFile } from "node:fs/promises";
 import { resolve as resolve2 } from "node:path";
 import { array, boolean as boolean2, object as object2, optional as optional2, parse as parse2, string as string2 } from "valibot";
@@ -116,13 +116,16 @@ ${Array.from(bumpedDevDependencies.entries()).map(([key, value]) => `  - [\`${ke
 ` : "";
 var release = changelog.findRelease();
 release || changelog.addRelease(release = new Release());
-release.changed(`Bumped dependencies, in PR [#${pullRequestNumber}](${new URL(
+var change = new Change(`Bumped dependencies, in PR [#${pullRequestNumber}](${new URL(
   pullRequestNumber,
   new URL("pull/", projectURL)
 )})
 ${bumpedDependenciesString}${bumpedDevDependenciesString}
 `);
+release.changed(change);
 await writeFile(changelogPath, changelog.toString());
+var changeText = change.toString().split("\n").map((line, index) => `${index ? "  " : "- "}${line}`).join("\n");
 core.setOutput("changelog", changelog.toString());
 core.setOutput("release", release.toString(changelog));
-console.log(changelog.toString());
+core.setOutput("change", changeText);
+console.log(changeText);

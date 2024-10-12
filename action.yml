@@ -5,6 +5,8 @@ inputs:
     description: Pull request number
     default: XXX
 outputs:
+  change:
+    description: Generated content of the change entry in the CHANGELOG
   changelog:
     description: Generated content of the CHANGELOG
   release:
