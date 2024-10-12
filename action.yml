@@ -1,16 +1,14 @@
 name: Generate CHANGELOG after bumping dependencies
 description: Generate CHANGELOG in keep-a-changelog style after bumping dependencies
 inputs:
+  change-path:
+    description: Write change entry to a file
   pull-request-number:
     description: Pull request number
     default: XXX
 outputs:
   change:
     description: Generated content of the change entry in the CHANGELOG
-  changelog:
-    description: Generated content of the CHANGELOG
-  release:
-    description: Generated content of the new release in CHANGELOG
 runs:
   using: node20
   main: dist/index.js

@@ -124,8 +124,8 @@ ${bumpedDependenciesString}${bumpedDevDependenciesString}
 `);
 release.changed(change);
 await writeFile(changelogPath, changelog.toString());
-var changeText = change.toString().split("\n").map((line, index) => `${index ? "  " : "- "}${line}`).join("\n");
-core.setOutput("changelog", changelog.toString());
-core.setOutput("release", release.toString(changelog));
+var changeText = change.toString();
 core.setOutput("change", changeText);
+var changePath = core.getInput("change-path");
+changePath && writeFile(changePath, changeText);
 console.log(changeText);

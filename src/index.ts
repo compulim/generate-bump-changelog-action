@@ -82,14 +82,12 @@ release.changed(change);
 
 await writeFile(changelogPath, changelog.toString());
 
-const changeText = change
-  .toString()
-  .split('\n')
-  .map((line, index) => `${index ? '  ' : '- '}${line}`)
-  .join('\n');
+const changeText = change.toString();
 
-core.setOutput('changelog', changelog.toString());
-core.setOutput('release', release.toString(changelog));
 core.setOutput('change', changeText);
+
+const changePath = core.getInput('change-path');
+
+changePath && writeFile(changePath, changeText);
 
 console.log(changeText);
