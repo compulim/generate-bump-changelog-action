@@ -1,7 +1,7 @@
 name: 'Generate CHANGELOG for bump'
 description: 'Generate CHANGELOG in keep-a-changelog style for bumping dependencies'
-inputs:
-outputs:
+inputs: {}
+outputs: {}
 runs:
   using: 'node20'
   main: 'dist/index.js'
