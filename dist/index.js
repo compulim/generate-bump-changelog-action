@@ -2,13 +2,11 @@
 import { parser, Release } from "keep-a-changelog";
 import { readFile as readFile2, writeFile } from "node:fs/promises";
 import { resolve as resolve2 } from "node:path";
-import { fileURLToPath as fileURLToPath2 } from "node:url";
 import { array, boolean as boolean2, object as object2, optional as optional2, parse as parse2, string as string2 } from "valibot";
 
 // src/private/diffDependencies.ts
 import { readFile } from "node:fs/promises";
 import { relative, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import simpleGit from "simple-git";
 import { boolean, object, optional, parse, record, string } from "valibot";
 
@@ -28,7 +26,7 @@ var packageJSONSchema = object({
   private: optional(boolean(), false)
 });
 async function diffDependencies(relativePathToProjectRoot) {
-  const projectRoot2 = resolve(fileURLToPath(import.meta.url), "../../../../");
+  const projectRoot2 = process.cwd();
   const packageJSONPath = resolve(projectRoot2, relativePathToProjectRoot);
   let headPackageJSON;
   try {
@@ -81,7 +79,7 @@ function sortKeyAsString(dependencies) {
 
 // src/index.ts
 var packageJSONSchema2 = object2({ bugs: optional2(object2({ url: string2() })), private: optional2(boolean2(), false) });
-var projectRoot = resolve2(fileURLToPath2(import.meta.url), "../../../../");
+var projectRoot = process.cwd();
 var changelogPath = resolve2(projectRoot, "CHANGELOG.md");
 var { workspaces } = parse2(
   object2({ workspaces: array(string2()) }),

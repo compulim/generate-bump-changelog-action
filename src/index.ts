@@ -9,7 +9,7 @@ import mergeMap from './private/mergeMap.ts';
 import sortKeyAsString from './private/sortKeyAsString.ts';
 
 const packageJSONSchema = object({ bugs: optional(object({ url: string() })), private: optional(boolean(), false) });
-const projectRoot = resolve(fileURLToPath(import.meta.url), '../../../../');
+const projectRoot = process.cwd();
 const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
 
 const { workspaces } = parse(

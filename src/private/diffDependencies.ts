@@ -19,7 +19,7 @@ export default async function diffDependencies(relativePathToProjectRoot: string
     private: boolean;
   }>
 > {
-  const projectRoot = resolve(fileURLToPath(import.meta.url), '../../../../');
+  const projectRoot = process.cwd();
   const packageJSONPath = resolve(projectRoot, relativePathToProjectRoot);
 
   let headPackageJSON: InferOutput<typeof packageJSONSchema>;
