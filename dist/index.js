@@ -33,7 +33,7 @@ async function diffDependencies(relativePathToProjectRoot) {
   try {
     headPackageJSON = parse(
       packageJSONSchema,
-      JSON.parse(await simpleGit().show(`HEAD:${relative(projectRoot2, packageJSONPath)}`))
+      JSON.parse(await simpleGit().show(`origin/main:${relative(projectRoot2, packageJSONPath)}`))
     );
   } catch {
     headPackageJSON = { private: true };
@@ -124,4 +124,5 @@ ${bumpedDependenciesString}${bumpedDevDependenciesString}
 `);
 await writeFile(changelogPath, changelog.toString());
 core.setOutput("changelog", changelog.toString());
+core.setOutput("release", release.toString(changelog));
 console.log(changelog.toString());
