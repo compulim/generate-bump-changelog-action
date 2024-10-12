@@ -27,7 +27,7 @@ export default async function diffDependencies(relativePathToProjectRoot: string
   try {
     headPackageJSON = parse(
       packageJSONSchema,
-      JSON.parse(await simpleGit().show(`HEAD:${relative(projectRoot, packageJSONPath)}`))
+      JSON.parse(await simpleGit().show(`origin/main:${relative(projectRoot, packageJSONPath)}`))
     );
   } catch {
     headPackageJSON = { private: true };
