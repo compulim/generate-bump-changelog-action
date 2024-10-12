@@ -80,6 +80,7 @@ ${bumpedDependenciesString}${bumpedDevDependenciesString}
 
 await writeFile(changelogPath, changelog.toString());
 
-core.setOutput('changelog',changelog.toString());
+core.setOutput('changelog', changelog.toString());
+core.setOutput('release', release.toString(changelog));
 
 console.log(changelog.toString());
