@@ -1,7 +1,7 @@
+import * as core from '@actions/core';
 import { parser, Release } from 'keep-a-changelog';
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { array, boolean, object, optional, parse, string } from 'valibot';
 
 import diffDependencies from './private/diffDependencies.ts';
@@ -11,6 +11,7 @@ import sortKeyAsString from './private/sortKeyAsString.ts';
 const packageJSONSchema = object({ bugs: optional(object({ url: string() })), private: optional(boolean(), false) });
 const projectRoot = process.cwd();
 const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
+const pullRequestNumber = core.getInput('pull-request-number', { required: true, trimWhitespace: true });
 
 const { workspaces } = parse(
   object({ workspaces: array(string()) }),
@@ -70,10 +71,15 @@ let release = changelog.findRelease();
 
 release || changelog.addRelease((release = new Release()));
 
-release.changed(`Bumped dependencies, in PR [#XXX](${new URL('pull/XXX', projectURL)})
+release.changed(`Bumped dependencies, in PR [#${pullRequestNumber}](${new URL(
+  pullRequestNumber,
+  new URL('pull/', projectURL)
+)})
 ${bumpedDependenciesString}${bumpedDevDependenciesString}
 `);
 
 await writeFile(changelogPath, changelog.toString());
+
+core.setOutput('changelog',changelog.toString());
 
 console.log(changelog.toString());

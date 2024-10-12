@@ -1,7 +1,12 @@
-name: 'Generate CHANGELOG for bump'
-description: 'Generate CHANGELOG in keep-a-changelog style for bumping dependencies'
-inputs: {}
-outputs: {}
+name: Generate CHANGELOG after bumping dependencies
+description: Generate CHANGELOG in keep-a-changelog style after bumping dependencies
+inputs:
+  pull-request-number:
+    description: Pull request number
+    default: XXX
+outputs:
+  changelog:
+    description: Generated content of the CHANGELOG
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: node20
+  main: dist/index.js

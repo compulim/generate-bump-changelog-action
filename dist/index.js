@@ -1,4 +1,5 @@
 // src/index.ts
+import * as core from "@actions/core";
 import { parser, Release } from "keep-a-changelog";
 import { readFile as readFile2, writeFile } from "node:fs/promises";
 import { resolve as resolve2 } from "node:path";
@@ -81,6 +82,7 @@ function sortKeyAsString(dependencies) {
 var packageJSONSchema2 = object2({ bugs: optional2(object2({ url: string2() })), private: optional2(boolean2(), false) });
 var projectRoot = process.cwd();
 var changelogPath = resolve2(projectRoot, "CHANGELOG.md");
+var pullRequestNumber = core.getInput("pull-request-number", { required: true, trimWhitespace: true });
 var { workspaces } = parse2(
   object2({ workspaces: array(string2()) }),
   JSON.parse(await readFile2(resolve2(projectRoot, "package.json"), "utf-8"))
@@ -114,8 +116,12 @@ ${Array.from(bumpedDevDependencies.entries()).map(([key, value]) => `  - [\`${ke
 ` : "";
 var release = changelog.findRelease();
 release || changelog.addRelease(release = new Release());
-release.changed(`Bumped dependencies, in PR [#XXX](${new URL("pull/XXX", projectURL)})
+release.changed(`Bumped dependencies, in PR [#${pullRequestNumber}](${new URL(
+  pullRequestNumber,
+  new URL("pull/", projectURL)
+)})
 ${bumpedDependenciesString}${bumpedDevDependenciesString}
 `);
 await writeFile(changelogPath, changelog.toString());
+core.setOutput("changelog", changelog.toString());
 console.log(changelog.toString());
