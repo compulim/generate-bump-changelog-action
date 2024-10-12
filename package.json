@@ -1,0 +1,24 @@
+{
+  "name": "@compulim/generate-bump-changelog-action",
+  "version": "0.0.0-0",
+  "private": true,
+  "author": "William Wong (https://github.com/compulim)",
+  "license": "MIT",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "build": "tsup --config ./tsup.config.ts",
+    "start": "npm run build -- --onSuccess \"node ./dist/generateChangeLog.js\" --silent --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.11",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "keep-a-changelog": "^2.5.3",
+    "simple-git": "^3.27.0",
+    "valibot": "^0.42.1"
+  }
+}
