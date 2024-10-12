@@ -1,5 +1,5 @@
 import { parser, Release } from 'keep-a-changelog';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { array, boolean, object, optional, parse, string } from 'valibot';
@@ -10,6 +10,7 @@ import sortKeyAsString from './private/sortKeyAsString.ts';
 
 const packageJSONSchema = object({ bugs: optional(object({ url: string() })), private: optional(boolean(), false) });
 const projectRoot = resolve(fileURLToPath(import.meta.url), '../../../../');
+const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
 
 const { workspaces } = parse(
   object({ workspaces: array(string()) }),
@@ -45,7 +46,7 @@ if (!projectURL) {
 const bumpedDependencies = sortKeyAsString(mergeMap(...allDependencies));
 const bumpedDevDependencies = sortKeyAsString(mergeMap(...allDevDependencies));
 
-const changelog = parser(await readFile(resolve(fileURLToPath(import.meta.url), '../../../../CHANGELOG.md'), 'utf-8'));
+const changelog = parser(await readFile(changelogPath, 'utf-8'));
 
 changelog.format = 'markdownlint';
 
@@ -72,5 +73,7 @@ release || changelog.addRelease((release = new Release()));
 release.changed(`Bumped dependencies, in PR [#XXX](${new URL('pull/XXX', projectURL)})
 ${bumpedDependenciesString}${bumpedDevDependenciesString}
 `);
+
+await writeFile(changelogPath, changelog.toString());
 
 console.log(changelog.toString());

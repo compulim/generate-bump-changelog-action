@@ -1,6 +1,6 @@
 // src/index.ts
 import { parser, Release } from "keep-a-changelog";
-import { readFile as readFile2 } from "node:fs/promises";
+import { readFile as readFile2, writeFile } from "node:fs/promises";
 import { resolve as resolve2 } from "node:path";
 import { fileURLToPath as fileURLToPath2 } from "node:url";
 import { array, boolean as boolean2, object as object2, optional as optional2, parse as parse2, string as string2 } from "valibot";
@@ -82,6 +82,7 @@ function sortKeyAsString(dependencies) {
 // src/index.ts
 var packageJSONSchema2 = object2({ bugs: optional2(object2({ url: string2() })), private: optional2(boolean2(), false) });
 var projectRoot = resolve2(fileURLToPath2(import.meta.url), "../../../../");
+var changelogPath = resolve2(projectRoot, "CHANGELOG.md");
 var { workspaces } = parse2(
   object2({ workspaces: array(string2()) }),
   JSON.parse(await readFile2(resolve2(projectRoot, "package.json"), "utf-8"))
@@ -105,7 +106,7 @@ if (!projectURL) {
 }
 var bumpedDependencies = sortKeyAsString(mergeMap(...allDependencies));
 var bumpedDevDependencies = sortKeyAsString(mergeMap(...allDevDependencies));
-var changelog = parser(await readFile2(resolve2(fileURLToPath2(import.meta.url), "../../../../CHANGELOG.md"), "utf-8"));
+var changelog = parser(await readFile2(changelogPath, "utf-8"));
 changelog.format = "markdownlint";
 var bumpedDependenciesString = bumpedDependencies.size ? `- Production dependencies
 ${Array.from(bumpedDependencies.entries()).map(([key, value]) => `  - [\`${key}@${value}\`](${new URL(`${key}/v/${value}`, "https://npmjs.com/package/")})`).join("\n")}
@@ -118,4 +119,5 @@ release || changelog.addRelease(release = new Release());
 release.changed(`Bumped dependencies, in PR [#XXX](${new URL("pull/XXX", projectURL)})
 ${bumpedDependenciesString}${bumpedDevDependenciesString}
 `);
+await writeFile(changelogPath, changelog.toString());
 console.log(changelog.toString());
