@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ESNext",
+    "types": [
+      "node"
+    ]
+  }
+}
